@@ -1,7 +1,6 @@
 import tempfile
 import os
 import time
-import torch as t
 import transformers
 import joblib
 import requests
@@ -11,6 +10,7 @@ from functools import wraps
 from transformers.models.bert.modeling_bert import BertForMaskedLM
 from transformers.models.gpt2.modeling_gpt2 import GPT2LMHeadModel
 from typing import Optional
+import torch as t
 
 mem = joblib.Memory(tempfile.gettempdir() + "/joblib_cache")
 
