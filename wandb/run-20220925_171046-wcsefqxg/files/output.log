@@ -1,9 +1,0 @@
-Training with config: {'epochs': 2, 'batch_size': 256, 'learning_rate': 0.0014, 'beta_0': 0.9, 'beta_1': 0.999, 'weight_decay': 0}
-Files already downloaded and verified
-Files already downloaded and verified
-Traceback (most recent call last):
-  File "/Users/alexischevalier/Python_projects/MLAB_public/w1d4_answers_part2.py", line 149, in <module>
-    train(wandb.config)
-  File "/Users/alexischevalier/Python_projects/MLAB_public/w1d4_answers_part2.py", line 80, in train
-    model.parameters(), lr=config["lr"], betas=(config["beta_0"], config["beta_1"]), weight_decay=config["weight_decay"]
-KeyError: 'lr'
