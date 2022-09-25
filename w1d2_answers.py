@@ -21,7 +21,6 @@ from tqdm.auto import tqdm
 import utils
 
 import w1d2_test_selfmade
-# import w1d2_test
 
 MAIN = __name__ == "__main__"
 
@@ -66,17 +65,17 @@ if MAIN:
     display(images[0])
 # %%
 
+if MAIN: 
+    preprocess = transforms.Compose(
+        [
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+        ]
+    )
 
-preprocess = transforms.Compose(
-    [
-        transforms.ToTensor(),
-        transforms.Resize((224, 224)),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-    ]
-)
 
-
-plt.imshow(rearrange(preprocess(images[0]), "c x y ->x y c"))
+    plt.imshow(rearrange(preprocess(images[0]), "c x y ->x y c"))
 
 
 # %%
@@ -746,14 +745,10 @@ class ResNet34(nn.Module):
         Return: shape (batch, n_classes)
         """
         rep = self.pool(self.relu(self.bn1(self.conv1(x))))
-        # print("after first pool", rep.shape)
         for i in range(self.number_of_blocks):
             rep = getattr(self, f"layer{i+1}")(rep)
-            # print("after layer", i, rep.shape)
         rep = self.avgpool(rep)
-        # print("after AveragePool", rep.shape)
         rep = Flatten()(rep)
-        # print("after Flatten", rep.shape)
         return self.fc(rep)
 
 
@@ -881,7 +876,9 @@ def train(trainloader: DataLoader, epochs: int) -> ResNet34:
 #         print("Loading model from disk: ", MODEL_FILENAME)
 #         model = t.load(MODEL_FILENAME)
 #     else:
-print("Training model from scratch")
-model = train(trainloader, epochs=8)
+
+if MAIN:
+    print("Training model from scratch")
+    model = train(trainloader, epochs=8)
 
 # %%

@@ -1,0 +1,22 @@
+Training with config: {'epochs': 3, 'batch_size': 512, 'learning_rate': 0.003, 'beta_0': 0.9, 'beta_1': 0.999, 'weight_decay': 0}
+Files already downloaded and verified
+Files already downloaded and verified
+[34m[1mwandb[39m[22m: logging graph, to disable use `wandb.watch(log_graph=False)`
+  0%|                                                                                                                                                                              | 0/98 [00:00<?, ?it/s]/Users/alexischevalier/opt/anaconda3/envs/py39/lib/python3.9/site-packages/torchvision/transforms/functional.py:209: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  mean = torch.tensor(mean, dtype=torch.float32)
+/Users/alexischevalier/opt/anaconda3/envs/py39/lib/python3.9/site-packages/torchvision/transforms/functional.py:210: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
+  std = torch.tensor(std, dtype=torch.float32)
+
+  4%|██████▊                                                                                                                                                               | 4/98 [00:05<01:58,  1.26s/it]
+Traceback (most recent call last):
+  File "/Users/alexischevalier/Python_projects/MLAB_public/w1d4_answers_part2.py", line 82, in <module>
+    train(wandb.config)
+  File "/Users/alexischevalier/Python_projects/MLAB_public/w1d4_answers_part2.py", line 44, in train
+    loss.backward()
+  File "/Users/alexischevalier/opt/anaconda3/envs/py39/lib/python3.9/site-packages/torch/_tensor.py", line 396, in backward
+    torch.autograd.backward(self, gradient, retain_graph, create_graph, inputs=inputs)
+  File "/Users/alexischevalier/opt/anaconda3/envs/py39/lib/python3.9/site-packages/torch/autograd/__init__.py", line 173, in backward
+    Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+  File "/Users/alexischevalier/opt/anaconda3/envs/py39/lib/python3.9/site-packages/wandb/wandb_torch.py", line 282, in <lambda>
+    handle = var.register_hook(lambda grad: _callback(grad, log_track))
+KeyboardInterrupt

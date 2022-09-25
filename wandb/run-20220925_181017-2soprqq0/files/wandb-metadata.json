@@ -1,0 +1,22 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.9.13",
+    "heartbeatAt": "2022-09-25T22:10:17.839855",
+    "startedAt": "2022-09-25T22:10:17.433828",
+    "docker": null,
+    "cpu_count": 8,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/alexischevalier/Python_projects/MLAB_public/w1d4_answers_part2.py",
+    "codePath": "w1d4_answers_part2.py",
+    "git": {
+        "remote": "https://github.com/AlexChvl/MLAB2_summary.git",
+        "commit": "1e1f2428b5e472e78d3ffedb111976cec139ce32"
+    },
+    "email": "alex.srac@gmail.com",
+    "root": "/Users/alexischevalier/Python_projects/MLAB_public",
+    "host": "alexs-air-2.wireless.ias.edu",
+    "username": "alexischevalier",
+    "executable": "/Users/alexischevalier/opt/anaconda3/envs/py39/bin/python"
+}
