@@ -11,6 +11,7 @@ from matplotlib import pyplot as plt
 from torch.utils.data import TensorDataset
 from tqdm.auto import tqdm
 import io
+from einops import repeat
 
 
 MAIN = __name__ == "__main__"
@@ -47,12 +48,6 @@ if MAIN:
 # %%
 
 
-with tarfile.open(IMDB_PATH) as archive:
-    readers = [(archive.extractfile(member), member) for member in archive.getmembers()]
-    for i in range(100):
-        print(readers[i][1].name)
-        print(readers[i][0].readline(), "\n\n\n")
-
 
 @dataclass
 class Review:
@@ -73,11 +68,9 @@ def load_reviews(path: str) -> list[Review]:
             name_list = name.split("/")
             if file is not None and len(name_list) == 4 and (name_list[2] == "pos" or name_list[2] == 'neg'):
                 file =  io.TextIOWrapper(file)
-                # assert len(name_list) == 4, f"{name_list}, {file.readline()}"
-    
                 rating = name_list[-1].split("_")
                 rating = rating[-1].split(".")[0]
-                new = Review(name_list[1], (name_list[2] == "pos"), int(rating), file.readline()) 
+                new = Review(name_list[1], (name_list[2] == "pos"), int(rating), file.read()) 
                 ret.append(new)
     return ret
 
@@ -93,27 +86,49 @@ if MAIN:
 
 
 # %%
-review_lengths = [len(review.text) for review in reviews]
-# %%
-plt.hist(review_lengths,bins = 100)
-# %%
-review_lengths_pos = [len(review.text) for review in reviews if review.is_positive]
-review_lengths_neg = [len(review.text) for review in reviews if not review.is_positive]
-plt.hist([review_lengths_pos, review_lengths_neg], bins = 100, histtype='step', label = ["positive", "negative"])
-plt.legend()
-plt.show()
 
-# %%
-plt.hist([review.stars for review in reviews], bins = list(range(11)))
-plt.show()
-[review for review in reviews if review.stars == 6]
-len(reviews)
-# %%
+if MAIN:
+    review_lengths = [len(review.text) for review in reviews]
+    plt.title("Distribution of number of words in reviews")
+    plt.hist(review_lengths,bins = 100)
+    plt.show()
 
 
-def to_dataset(tokenizer, reviews: list[Review]) -> TensorDataset:
+
+    review_lengths_pos = [len(review.text) for review in reviews if review.is_positive]
+    review_lengths_neg = [len(review.text) for review in reviews if not review.is_positive]
+    plt.title("Distribution of number of words in positive and negative reviews")
+    plt.hist([review_lengths_pos, review_lengths_neg], bins = 100, histtype='step', label = ["positive", "negative"])
+    plt.legend()
+    plt.show()
+
+
+    plt.title("Number of reviews by star rating")
+    plt.hist([review.stars for review in reviews], bins = list(range(11)))
+    plt.show()
+ 
+# %%
+
+
+def ablate_mask(mask: t.Tensor):
+    """Make the reviews shorted for faster computations on local machines. Proceeds by halving the length of a review. Only the first half of words is discarded. This is done by changing the attention mask
+    
+    mask: Boolean Tensor of shape (batch, seq)
+    out: Boolean Tensor of shape (batch, seq)
+    """
+
+    num_words = t.sum(mask.to(int), dim = 1, keepdim=True)
+    indices =  repeat(t.arange(mask.shape[1]), "a -> rep a", rep = mask.shape[0])
+    mask = mask * t.where((indices > num_words//3), True, False)
+    return mask
+
+ 
+
+
+
+def to_dataset(tokenizer, reviews: list[Review], downsize = False, ablate = False) -> TensorDataset:
     """Tokenize the reviews (which should all belong to the same split) and bundle into a TensorDataset.
-
+    If downsize = True, the dataset will be heavily compressed. Only the first 500 reviews will be retained and the attention mask for each review will be modified so that only the second half of words is taken into account.
     The tensors in the dataset should be:
 
     input_ids: shape (batch, sequence length), dtype int
@@ -126,15 +141,41 @@ def to_dataset(tokenizer, reviews: list[Review]) -> TensorDataset:
     attention_mask = t.LongTensor(tokenizer([review.text for review in reviews], padding = True, truncation = True)["attention_mask"])
     sentiment_labels = t.LongTensor([review.is_positive for review in reviews])
     star_labels = t.LongTensor([review.stars for review in reviews])
+
+    if downsize == True:
+        indices = t.randperm(25000)[:800]
+        input_ids = input_ids[indices]
+        attention_mask = attention_mask[indices]
+        sentiment_labels = sentiment_labels[indices]
+        star_labels = star_labels[indices]
+
+    if ablate == True:
+        attention_mask = ablate_mask(attention_mask)
     return TensorDataset(input_ids, attention_mask, sentiment_labels, star_labels)
 
 
 if MAIN:
-    tokenizer = transformers.AutoTokenizer.from_pretrained("bert-base-cased")
-    train_data = to_dataset(tokenizer, [r for r in reviews if r.split == "train"])
-    test_data = to_dataset(tokenizer, [r for r in reviews if r.split == "test"])
+#included to run on local machine
+    if device.type == "cpu":
+        tokenizer = transformers.AutoTokenizer.from_pretrained("bert-base-cased")
+        train_data = to_dataset(tokenizer, [r for r in reviews if r.split == "train"], downsize = True)
+        test_data = to_dataset(tokenizer, [r for r in reviews if r.split == "test"], downsize = True)
+
+
+        plt.hist([train_data[i][3] for i in range(len(train_data))])
+        plt.title("Star ratings in train dataset")
+        plt.show()
+
+        plt.hist([test_data[i][3] for i in range(len(test_data))])
+        plt.title("Star ratings in test dataset")
+        plt.show()
+
     t.save((train_data, test_data), SAVED_TOKENS_PATH)
 
 
 
+
+
 # %%
+ 
+    
