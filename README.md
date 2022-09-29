@@ -1,5 +1,5 @@
 # MLAB2_summary
-Collection of coding assignments from MLAB. These were initially completed in pair programming with other MLAB participants over three weeks in August 2022. I have since then reworked some aspects of the exercises. All code included here runs on my local machine. 
+Collection of coding assignments from MLAB. These were initially completed in pair programming with other MLAB participants over three weeks in August 2022. I have since then reworked some aspects of the exercises.  Some files are reworked so that they can run on my laptop. Some files can only reasonably run on a gpu but are included here for reference.
 
 I have removed any files from the course that I did not contribute to. This includes the instruction files and the test files. The test files included here were written by me. I have also removed course material that has to do with interpretability research in order to keep it private. All material here is freely available online.
 
@@ -18,4 +18,8 @@ w2d1: We build a Bert model from scratch, we load the weights from the HuggingFa
 w2d2: GPT day. 
 Part 1: We download the imdb sentiment dataset in order to do next word prediction and sentiment prediction on the reviews. We inspect the dataset. In particular, we find that reviews tend to be either very positive or very negative. We also find that the distribution of number of words per review does not vary between positive and negative reviews. 
 
-Part 2: We train a classifier based on BERT to predict the star rating on the IMDB review dataset. When running on cpus, we only train the model on 800 reviews (otherwise the task is unreasonably long). On a small sample of obtain a Mean Absolute Error of 1.03.
+Part 2: We train a classifier based on BERT to predict the star rating on the IMDB review dataset. When running on cpus, we only train the model on 800 reviews (otherwise the task is unreasonably long).
+
+Part 3: We set up a training procedure for BERT. 
+
+Part 4: We train a small BERT model on a small amount of data.
