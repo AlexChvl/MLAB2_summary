@@ -15,7 +15,7 @@ w1d4: Part 2: Hyperparameter search: We train a resnet model on the cifar10 task
 
 w2d1: We build a Bert model from scratch, we load the weights from the HuggingFace transformer library and we use the model to make some next-token predictions.
 
-w2d2: GPT day. 
+w2d2: BERT day. 
 Part 1: We download the imdb sentiment dataset in order to do next word prediction and sentiment prediction on the reviews. We inspect the dataset. In particular, we find that reviews tend to be either very positive or very negative. We also find that the distribution of number of words per review does not vary between positive and negative reviews. 
 
 Part 2: We train a classifier based on BERT to predict the star rating on the IMDB review dataset. When running on cpus, we only train the model on 800 reviews (otherwise the task is unreasonably long).
