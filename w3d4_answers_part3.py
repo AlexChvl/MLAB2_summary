@@ -74,7 +74,7 @@ def get_fashion_mnist(train_transform, test_transform) -> tuple[TensorDataset, T
 
 
 if MAIN:
-    train_transform = Compose([ToTensor(), RandomHorizontalFlip(), Lambda(lambda t: t * 2 - 1)])
+    train_transform = Compose([RandomHorizontalFlip(), ToTensor(), Lambda(lambda t: t * 2 - 1)])
     data_folder = Path("data/w3d4")
     data_folder.mkdir(exist_ok=True, parents=True)
     DATASET_FILENAME = data_folder / "generative_models_dataset_fashion.pt"
